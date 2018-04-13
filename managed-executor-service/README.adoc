@@ -1,0 +1,161 @@
+= managed-executor-service: Managed Executor Service example
+:author: Rafael Benevides
+:productName: JBoss EAP
+:productNameFull: Red Hat JBoss Enterprise Application Platform
+:jbossHomeName: EAP_HOME
+:productVersion: 7.1
+:buildRequirements: Java 8.0 (Java SDK 1.8) or later and Maven 3.3.1 or later
+include::../shared-doc/attributes.adoc[]
+
+:level: Beginner
+:technologies: EE Concurrency Utilities, JAX-RS, JAX-RS Client API
+:source: {githubRepoUrl}
+
+[abstract]
+The `managed-executor-service` quickstart demonstrates how Java EE applications can submit tasks for asynchronous execution.
+
+:standalone-server-type: default
+:archiveType: war
+
+== What is it?
+
+The Managed Executor Service (javax.enterprise.concurrent.ManagedExecutorService) allows Java EE applications to submit tasks for asynchronous execution. It is an extension of Java SE's Executor Service (java.util.concurrent.ExecutorService) adapted to the Java EE platform requirements.
+
+Managed Executor Service instances are managed by the application server, thus Java EE applications are forbidden to invoke any lifecycle related method.
+
+A JAX-RS resource provides access to some operations that are executed asynchronously.
+
+This quickstart does not contain any user interface. The tests must be run to verify everything is working correctly.
+
+//*************************************************
+// Add notes about use in a production environment.
+//*************************************************
+// == Considerations for Use in a Production Environment
+:uses-h2:
+:uses-ds-xml:
+include::../shared-doc/development-shortcuts.adoc[leveloffset=+1]
+
+//*************************************************
+// Add System Requirements
+//*************************************************
+// == System Requirements
+include::../shared-doc/system-requirements.adoc[leveloffset=+1]
+
+//*************************************************
+// Add Use of JBoss Home Name
+//*************************************************
+// == Use of {jbossHomeName}
+include::../shared-doc/use-of-jboss-home-name.adoc[leveloffset=+1]
+
+//*************************************************
+// Start the server with the default profile
+//*************************************************
+// == Start the {productName} Standalone Server
+include::../shared-doc/start-the-standalone-server.adoc[leveloffset=+1]
+
+//*************************************************
+// Run the Arquillian tests
+//*************************************************
+// == Run the Arquillian Tests
+include::../shared-doc/run-arquillian-tests.adoc[leveloffset=+1]
+
+
+== Investigate the Console Output
+
+When you run the Arquillian tests, Maven prints summary of the performed tests to the console. You should see the following results.
+
+[source,options="nowrap"]
+----
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running org.jboss.as.quickstarts.managedexecutorservice.test.ProductsRestClientIT
+org.xnio.Xnio <clinit>
+INFO: XNIO version 3.3.4.Final
+org.xnio.nio.NioXnio <clinit>
+INFO: XNIO NIO Implementation Version 3.3.4.Final
+org.jboss.remoting3.EndpointImpl <clinit>
+INFO: JBoss Remoting version 4.0.18.Final
+org.jboss.as.quickstarts.managedexecutorservice.test.ProductsRestClientIT testRestResources
+INFO: creating a new product
+org.jboss.as.quickstarts.managedexecutorservice.test.ProductsRestClientIT testRestResources
+INFO: Product created. Executing a long running task
+org.jboss.as.quickstarts.managedexecutorservice.test.ProductsRestClientIT testRestResources
+INFO: Deleting all products
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.619 sec - in org.jboss.as.quickstarts.managedexecutorservice.test.ProductsRestClientIT
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+----
+
+== Investigate the Server Console Output
+
+Look at the {productName} console or Server log and you should see log messages like the following:
+
+[source,options="nowrap"]
+----
+INFO  [ProductResourceRESTService] (default task-51) Will create a new Product on other Thread
+INFO  [ProductResourceRESTService] (default task-51) Returning response
+INFO  [PersitTask] (EE-ManagedExecutorService-default-Thread-5) Begin transaction
+INFO  [PersitTask] (EE-ManagedExecutorService-default-Thread-5) Persisting a new product
+INFO  [PersitTask] (EE-ManagedExecutorService-default-Thread-5) Commit transaction
+INFO  [ProductResourceRESTService] (default task-52) Submitting a new long running task to be executed
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [LongRunningTask] (EE-ManagedExecutorService-default-Thread-5) Starting a long running task
+INFO  [LongRunningTask] (EE-ManagedExecutorService-default-Thread-5) Analysing A Product
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Waiting for the result to be available...
+INFO  [ProductResourceRESTService] (default task-52) Result is available. Returning result...56
+INFO  [ProductResourceRESTService] (default task-53) Will delete all Products on other Thread
+INFO  [ProductResourceRESTService] (default task-53) Returning response
+INFO  [DeleteTask] (EE-ManagedExecutorService-default-Thread-5) Begin transaction
+INFO  [DeleteTask] (EE-ManagedExecutorService-default-Thread-5) Deleting all products
+INFO  [DeleteTask] (EE-ManagedExecutorService-default-Thread-5) Commit transaction. Products deleted: 1
+----
+
+Note that the PersistTask and DeleteTask were executed after ProductResourceRESTService sends a Response. The only exception is for LongRunningTask where ProductResourceRESTService waits for its response.
+
+== Server Log: Expected Warnings and Errors
+
+You will see the following warnings in the server log. You can ignore these warnings.
+
+[source,options="nowrap"]
+----
+WFLYJCA0091: -ds.xml file deployments are deprecated. Support may be removed in a future version.
+
+HHH000431: Unable to determine H2 database version, certain features may not work
+----
+
+//*************************************************
+// Add JBoss Developer Studio instructions
+//*************************************************
+// == Run the Quickstart in Red Hat JBoss Developer Studio or Eclipse
+include::../shared-doc/run-the-quickstart-in-jboss-developer-studio.adoc[leveloffset=+1]
+
+// Additional JBoss Developer Studio instructions
+To run the tests in Red Hat JBoss Developer Studio, you must first set the active Maven profile in project properties to one of the following:
+
+* `arq-remote`: This setting is used for a remote server. JBoss Developer Studio starts the server for you.
+* `arq-managed`: This setting is used for a managed server. If you use this setting, you must xref:start_the_eap_standalone_server[start the server] before you run the tests.
+
+Then, to run the tests, right click on the project or individual classes and select *Run As* –> *JUnit Test* in the context menu.
+
+//*************************************************
+// Deploy the quickstart to OpenShift
+//*************************************************
+// == Deploy the Quickstart to OpenShift Online
+include::../shared-doc/deploy-to-openshift-online.adoc[leveloffset=+1]
+
+//*************************************************
+// Add info to debug the application
+//*************************************************
+// == Debug the Application
+include::../shared-doc/debug-the-application.adoc[leveloffset=+1]

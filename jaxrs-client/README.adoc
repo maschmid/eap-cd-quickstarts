@@ -1,0 +1,155 @@
+= jaxrs-client: JAX-RS Client API example
+:author: Rafael Benevides
+:productName: JBoss EAP
+:productNameFull: Red Hat JBoss Enterprise Application Platform
+:jbossHomeName: EAP_HOME
+:productVersion: 7.1
+:buildRequirements: Java 8.0 (Java SDK 1.8) or later and Maven 3.3.1 or later
+include::../shared-doc/attributes.adoc[]
+
+:level: Beginner
+:technologies: JAX-RS
+:source: {githubRepoUrl}
+
+[abstract]
+The `jaxrs-client` quickstart demonstrates JAX-RS Client API, which interacts with a JAX-RS Web service that runs on {productName}.
+
+:standalone-server-type: default
+:archiveType: war
+
+== What is it?
+
+The `jaxrs-client` quickstart demonstrates the JAX-RS Client API which interacts with a JAX-RS Web service.
+
+This client "calls" many `POST`, `GET`, and `DELETE` operations using different ways: synchronized, asynchronous, delayed and filtered invocations.
+
+//*************************************************
+// Add System Requirements
+//*************************************************
+// == System Requirements
+include::../shared-doc/system-requirements.adoc[leveloffset=+1]
+
+//*************************************************
+// Add Use of JBoss Home Name
+//*************************************************
+// == Use of {jbossHomeName}
+include::../shared-doc/use-of-jboss-home-name.adoc[leveloffset=+1]
+
+//*************************************************
+// Start the server with the default profile
+//*************************************************
+// == Start the {productName} Standalone Server
+include::../shared-doc/start-the-standalone-server.adoc[leveloffset=+1]
+
+//*************************************************
+// Build and deploy the quickstart WAR
+//*************************************************
+// == Build and Deploy the Quickstart
+include::../shared-doc/build-and-deploy-the-quickstart.adoc[leveloffset=+1]
+
+//*************************************************
+// Run the Arquillian tests
+//*************************************************
+// == Run the Arquillian Tests
+include::../shared-doc/run-arquillian-tests.adoc[leveloffset=+1]
+
+
+== Investigate the Console Output
+
+When you run the Arquillian tests, Maven prints summary of the performed tests to the console. You should see the following results.
+
+[source,options="nowrap"]
+----
+-------------------------------------------------------
+T E S T S
+-------------------------------------------------------
+Running org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest requestResponseFiltersTest
+INFO: ### Testing Request and Response Filters ###
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest requestResponseFiltersTest
+INFO: dropping all contacts
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest requestResponseFiltersTest
+INFO: Invoking create new contact using a ClientRequestFilter
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest requestResponseFiltersTest
+INFO: Invoking list all contacts using a ClientResponseFilter
+org.jboss.as.quickstarts.jaxrsclient.test.LogResponseFilter filter
+INFO: Date: Mon Dec 29 15:34:45 BRST 2014- Status: 200
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest delayedInvocationTest
+INFO: ### Testing Delayed invocaton ###
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest delayedInvocationTest
+INFO: dropping all contacts
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest delayedInvocationTest
+INFO: Creating a new contact invocation
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest delayedInvocationTest
+INFO: Creating list all contacts invocation
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest delayedInvocationTest
+INFO: invoking the new contact
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest delayedInvocationTest
+INFO: invoking list all contacts ASYNC
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest asyncCrudTest
+INFO: ### CRUD tests  ASYNC ###
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest asyncCrudTest
+INFO: dropping all contacts ASYNC
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest asyncCrudTest
+INFO: creating a new contact ASYNC
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest asyncCrudTest
+INFO: delete a contact by id ASYNC
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest asyncCrudTest
+INFO: fetching all contacts ASYNC
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest invocationCallBackTest
+INFO: ### Testing invocation callback ###
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest invocationCallBackTest
+INFO: dropping all contacts
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest invocationCallBackTest
+INFO: Creating a InvocationCallback
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest invocationCallBackTest
+INFO: Invoking a service using the InvocationCallback
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest cruedTest
+INFO: ### CRUD tests ###
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest cruedTest
+INFO: dropping all contacts
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest cruedTest
+INFO: creating a new contact
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest cruedTest
+INFO: fetching a contact by id
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest cruedTest
+INFO: fetching all contacts
+org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest cruedTest
+INFO: delete a contact by id
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.51 sec - in org.jboss.as.quickstarts.jaxrsclient.test.ContactsRestClientTest
+
+Results :
+
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+----
+
+//*************************************************
+// Undeploy the quickstart archive
+//*************************************************
+// == Undeploy the Quickstart
+include::../shared-doc/undeploy-the-quickstart.adoc[leveloffset=+1]
+
+
+//*************************************************
+// Add JBoss Developer Studio instructions
+//*************************************************
+// == Run the Quickstart in Red Hat JBoss Developer Studio or Eclipse
+include::../shared-doc/run-the-quickstart-in-jboss-developer-studio.adoc[leveloffset=+1]
+
+// Additional JBoss Developer Studio instructions
+To run the tests in Red Hat JBoss Developer Studio:
+
+. You must first set the active Maven profile in project properties to be either `arq-managed` for running on managed server or `arq-remote` for running on remote server.
+. Then, to run the tests, right click on the project or individual classes and select Run As –&gt; JUnit Test in the context menu.
+
+//*************************************************
+// Deploy the quickstart to OpenShift
+//*************************************************
+// == Deploy the Quickstart to OpenShift Online
+include::../shared-doc/deploy-to-openshift-online.adoc[leveloffset=+1]
+
+//*************************************************
+// Add info to debug the application
+//*************************************************
+// == Debug the Application
+include::../shared-doc/debug-the-application.adoc[leveloffset=+1]
